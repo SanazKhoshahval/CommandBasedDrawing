@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Assign04_Start\P6_23_Start1.c">
+    <ClCompile Include="P6_23_Start1.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
