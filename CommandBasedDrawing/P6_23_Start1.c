@@ -41,10 +41,10 @@ int main()
 
 		// Test program bound checking and add border in the process
 
-		//   Uncomment next line when ready to test out of bounds checking
 		1, 5, 100, 2, 4, 5, 100, 4, 5, 100, 4, 5, 100, 4, 5, 100, 4, 5, 100,
 
 		1, 6, 9 }; // finish off
+
 
 
 	// Invoke function which will execute commands
@@ -76,7 +76,7 @@ const short STARTING_PEN_POSITION = FALSE; // Pen will be up when
 
 // some more function prototypes
 void displayFloor(const short[][NCOLS]);
-void moveTurtle(short[][NCOLS], const int, const enum Dirs, const short, int*, int*);
+void moveTurtle(short floor[][NCOLS], const int numOfMoves, const enum Dirs currDir, const short penPos, int* rowPtr, int* colPtr);
 
 // turtleDraw() - function responsible for executing commands
 void turtleDraw(const int cmds[])
@@ -129,10 +129,10 @@ void turtleDraw(const int cmds[])
 			++cmdNo;  // move to next command in the command array
 			//   we need next value to know how many spaces to move
 
-  // We pass pointers to row and col below so that when we update in moveTurtle()
-  //    they are updated here in turtleDraw() as well.
-			moveTurtle(floor, cmds[cmdNo], direction, pen, &row, &col); // move turtle as required
-			//  and update floor as req.
+            // We pass pointers to row and col below so that when we update in moveTurtle()
+             //    they are updated here in turtleDraw() as well.
+		     moveTurtle(floor, cmds[cmdNo], direction, pen, &row, &col); // move turtle as required
+		    //  and update floor as req.
 			break; // end of case MOVE:
 
 		case DISPLAY: // display the floor matrix
@@ -162,31 +162,39 @@ void turtleDraw(const int cmds[])
 //      is automatically passed by reference.
 void moveTurtle(short floor[][NCOLS], const int numOfMoves, const enum Dirs currDir, const short penPos, int* rowPtr, int* colPtr)
 {
+	int deltaRow = 0, deltaCol = 0;
 
-	int moves = numOfMoves;
-	while (moves > 0) {
-		switch (currDir) {
-		case EAST:
-			if (*colPtr + 1 < NCOLS) *colPtr += 1;
-			break;
-		case WEST:
-			if (*colPtr - 1 >= 0) *colPtr -= 1;
-			break;
-		case NORTH:
-			if (*rowPtr - 1 >= 0) *rowPtr -= 1;
-			break;
-		case SOUTH:
-			if (*rowPtr + 1 < NROWS) *rowPtr += 1;
-			break;
-		}
-
-		if (penPos && moves != 1) { // check if the pen is down and not the last move
-			floor[*rowPtr][*colPtr] = TRUE;
-		}
-		moves--;
+	// Determine the direction to move
+	switch (currDir) {
+	case NORTH:
+		deltaRow = -1; // move up
+		break;
+	case SOUTH:
+		deltaRow = 1; // move down
+		break;
+	case EAST:
+		deltaCol = 1; // move right
+		break;
+	case WEST:
+		deltaCol = -1; // move left
+		break;
 	}
 
-}// end of moveTurtle()
+	// Perform the movement
+	for (int i = 0; i < numOfMoves; i++) {
+		if (penPos && i < numOfMoves) { // Mark the floor if pen is down for all moves except last
+			floor[*rowPtr][*colPtr] = TRUE;
+		}
+
+		// Update position
+		if (*rowPtr + deltaRow >= 0 && *rowPtr + deltaRow < NROWS)
+			*rowPtr += deltaRow;
+		if (*colPtr + deltaCol >= 0 && *colPtr + deltaCol < NCOLS)
+			*colPtr += deltaCol;
+	}
+}
+
+
 
 // Responsible for displaying the floor
 void displayFloor(const short floorSurface[][NCOLS])
