@@ -20,7 +20,6 @@ void turtleDraw(const int[]); // main function responsible for executing cmds
 // main supplies data to be passed to turtleDraw() function
 int main()
 {
-
 	int commands[] = { 5, 5, 4, 5, 9, 2,   // go to start of first letter and put pen down
 
 		// B
@@ -41,6 +40,7 @@ int main()
 
 		// Test program bound checking and add border in the process
 
+		//   Uncomment next line when ready to test out of bounds checking
 		1, 5, 100, 2, 4, 5, 100, 4, 5, 100, 4, 5, 100, 4, 5, 100, 4, 5, 100,
 
 		1, 6, 9 }; // finish off
@@ -187,10 +187,12 @@ void moveTurtle(short floor[][NCOLS], const int numOfMoves, const enum Dirs curr
 		}
 
 		// Update position
-		if (*rowPtr + deltaRow >= 0 && *rowPtr + deltaRow < NROWS)
+		if (*rowPtr + deltaRow >= 0 && *rowPtr + deltaRow < NROWS) {
 			*rowPtr += deltaRow;
-		if (*colPtr + deltaCol >= 0 && *colPtr + deltaCol < NCOLS)
+		}
+		if (*colPtr + deltaCol >= 0 && *colPtr + deltaCol < NCOLS) {
 			*colPtr += deltaCol;
+		}
 	}
 }
 
